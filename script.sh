@@ -23,8 +23,8 @@ if [[ -z "$blob_url" ]]; then
     exit 1
 fi
 
-# Generate a temporary filename
-temp_file=$(mktemp)
+# Define temporary filenames
+temp_file=$(mktemp --suffix=".dmp")
 compressed_file="${temp_file}.gz"
 
 # Download the file
@@ -35,7 +35,7 @@ if [[ $? -ne 0 ]]; then
     rm -f "$temp_file"
     exit 1
 fi
-echo "File downloaded successfully."
+echo "File downloaded successfully as $temp_file."
 
 # Compress the file
 echo "Compressing the file..."
@@ -45,7 +45,7 @@ if [[ $? -ne 0 ]]; then
     rm -f "$temp_file" "$compressed_file"
     exit 1
 fi
-echo "File compressed successfully."
+echo "File compressed successfully as $compressed_file."
 
 # Upload the compressed file to blob storage using the specified azcopy path
 echo "Uploading the compressed file to $blob_url..."
@@ -55,7 +55,7 @@ if [[ $? -ne 0 ]]; then
     rm -f "$temp_file" "$compressed_file"
     exit 1
 fi
-echo "File uploaded successfully."
+echo "File uploaded successfully to $blob_url."
 
 # Clean up temporary files
 rm -f "$temp_file" "$compressed_file"
